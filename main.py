@@ -1,8 +1,8 @@
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, \
      QLineEdit, QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, \
-     QVBoxLayout, QComboBox
-from PyQt6.QtGui import QAction
+     QVBoxLayout, QComboBox, QToolBar, QStatusBar
+from PyQt6.QtGui import QAction, QIcon
 import sys
 import sqlite3
 from classess import InsertDialog, SearchDialog
@@ -11,10 +11,12 @@ class StudentManagementSystem(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Student Management System")
-        self.setFixedSize(800, 600)
+        self.setMinimumSize(800, 600)
         self._create_menu()
         self._create_table()
         self._load_data()
+        self._toolbar()
+        self._statusbar()
         self.search_dialog = SearchDialog()
         self.search_dialog.search.connect(self._load_data)
 
@@ -23,17 +25,17 @@ class StudentManagementSystem(QMainWindow):
         help_menu = self.menuBar().addMenu("&Help")
         search_menu = self.menuBar().addMenu("&Search")
 
-        add_student_action = QAction("Add Student", self)
-        add_student_action.triggered.connect(self.add_student)
-        file_menu.addAction(add_student_action)
+        self.add_student_action = QAction(QIcon("icons/add.png"), "Add Student", self)
+        self.add_student_action.triggered.connect(self.add_student)
+        file_menu.addAction(self.add_student_action)
 
-        about_action = QAction("About", self)
-        about_action.triggered.connect(self.about)
-        help_menu.addAction(about_action)
+        self.about_action = QAction("About", self)
+        self.about_action.triggered.connect(self.about)
+        help_menu.addAction(self.about_action)
         
-        search_action = QAction("Search", self)
-        search_action.triggered.connect(self.search)
-        search_menu.addAction(search_action)
+        self.search_action = QAction(QIcon("icons/search.png"), "Search", self)
+        self.search_action.triggered.connect(self.search)
+        search_menu.addAction(self.search_action)
         
     def _create_table(self):
         self.student_table = QTableWidget()
@@ -42,7 +44,33 @@ class StudentManagementSystem(QMainWindow):
         self.student_table.setHorizontalHeaderLabels(header_labels)
         self.student_table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.student_table)
+        
+        
+    def _toolbar(self):
+        toolbar = QToolBar("Toolbar")
+        toolbar.setMovable(True)
+        self.addToolBar(toolbar)
+        toolbar.addAction(self.add_student_action)
+        toolbar.addAction(self.search_action)
+        
+    def _statusbar(self):
+        statusbar = QStatusBar()
+        self.setStatusBar(statusbar)
+        hm = QLabel("Hello World")
+        statusbar.addWidget(hm)
+        
+        # detect a cell click
+        self.student_table.cellClicked.connect(self.cell_clicked)
+        
+    def cell_clicked(self):
+        edit_button = QPushButton("Edit")
+        edit_button.clicked.connect(self.edit_cell)
+        delete_button = QPushButton("Delete")
+        
 
+    def edit_cell(self):
+        dialog = EditDialog()
+        dialog.exec()
     def _load_data(self):
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()

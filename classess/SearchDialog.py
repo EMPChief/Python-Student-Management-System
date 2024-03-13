@@ -1,10 +1,7 @@
 
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, \
-    QLineEdit, QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, \
-    QVBoxLayout, QComboBox
-from PyQt6.QtGui import QAction
-import sys
+from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QLabel,QLineEdit, QPushButton, QTableWidget, QTableWidgetItem, QDialog, \
+    QVBoxLayout
 import sqlite3
 
 
