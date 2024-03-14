@@ -1,55 +1,64 @@
-
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import QLabel,QLineEdit, QPushButton, QTableWidget, QTableWidgetItem, QDialog, \
-    QVBoxLayout
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QApplication, QLineEdit, QPushButton, QVBoxLayout, QDialog, QTableWidgetItem, QTableWidget
 import sqlite3
 
-
 class SearchDialog(QDialog):
-    search = pyqtSignal()
-
-    def __init__(self):
+    def __init__(self, main_window):
         super().__init__()
+        self.main_window = main_window
+        self.last_found_row = -1
+        self.found_items = []
 
         self.setWindowTitle("Search Student")
-        self.setFixedSize(300, 300)
-        self.search_label = QLabel("Search")
-        self.search_text = QLineEdit()
+        self.setFixedWidth(300)
+        self.setFixedHeight(300)
 
         layout = QVBoxLayout()
-        layout.addWidget(self.search_label)
-        layout.addWidget(self.search_text)
+        self.student_name = QLineEdit()
+        self.student_name.setPlaceholderText("Name")
+        layout.addWidget(self.student_name)
 
         self.search_button = QPushButton("Search")
-        self.search_button.clicked.connect(self.query_db)
+        self.search_button.clicked.connect(self.search_student)
         layout.addWidget(self.search_button)
-
-        self.results_table = QTableWidget()  # Initialize the results table
-        self.results_table.setColumnCount(4)
-        header_labels = ("ID", "Name", "Course", "Number")
-        self.results_table.setHorizontalHeaderLabels(header_labels)
-        layout.addWidget(self.results_table)
 
         self.setLayout(layout)
 
-    def query_db(self):
-        query = self.search_text.text().strip()
-        if not query:
-            return
-
+    def search_student(self):
+        name = self.student_name.text().strip()
         connection = sqlite3.connect("database.db")
         cursor = connection.cursor()
-        results = cursor.execute(
-            "SELECT * FROM students WHERE name LIKE ? OR course LIKE ? OR mobile LIKE ?",
-            (f"%{query}%", f"%{query}%", f"%{query}%")
-        )
-        self.results_table.setRowCount(0)
-
-        for row_num, row_data in enumerate(results):
-            self.results_table.insertRow(row_num)
-            for col_num, data in enumerate(row_data):
-                item = QTableWidgetItem(str(data))
-                self.results_table.setItem(row_num, col_num, item)
-
+        result = cursor.execute("SELECT * FROM students WHERE name = ?", (name,))
+        rows = list(result)
         cursor.close()
         connection.close()
+
+        if not rows:
+            print("No student found with that name.")
+            self.reset_search()
+            return
+
+        self.found_items.clear()
+        self.main_window.student_table.clearSelection()
+
+        for row in rows:
+            for row_num in range(self.main_window.student_table.rowCount()):
+                item = self.main_window.student_table.item(row_num, 1)
+                if item is not None and item.text() == name:
+                    self.found_items.append(item)
+
+        if not self.found_items:
+            print("No matching rows found.")
+            self.reset_search()
+            return
+
+        self.last_found_row = (self.last_found_row + 1) % len(self.found_items)
+        current_item = self.found_items[self.last_found_row]
+
+        current_item.setSelected(True)
+        self.main_window.student_table.scrollToItem(current_item, QTableWidget.ScrollHint.EnsureVisible)
+
+    def reset_search(self):
+        self.last_found_row = -1
+        self.student_name.clear()
+        self.main_window.student_table.clearSelection()

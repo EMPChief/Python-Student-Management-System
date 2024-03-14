@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, \
 from PyQt6.QtGui import QAction, QIcon
 import sys
 import sqlite3
-from classess import InsertDialog, SearchDialog
+from classess import InsertDialog, SearchDialog, EditDialog, DeleteDialog
 
 class StudentManagementSystem(QMainWindow):
     def __init__(self):
@@ -17,8 +17,7 @@ class StudentManagementSystem(QMainWindow):
         self._load_data()
         self._toolbar()
         self._statusbar()
-        self.search_dialog = SearchDialog()
-        self.search_dialog.search.connect(self._load_data)
+        self.search_dialog = SearchDialog(self)
 
     def _create_menu(self):
         file_menu = self.menuBar().addMenu("&File")
@@ -54,23 +53,45 @@ class StudentManagementSystem(QMainWindow):
         toolbar.addAction(self.search_action)
         
     def _statusbar(self):
-        statusbar = QStatusBar()
-        self.setStatusBar(statusbar)
-        hm = QLabel("Hello World")
-        statusbar.addWidget(hm)
-        
-        # detect a cell click
+        self.statusbar = QStatusBar()
+        self.setStatusBar(self.statusbar)
+        labeling = QLabel("EMP")
+        self.statusbar.addWidget(labeling)
         self.student_table.cellClicked.connect(self.cell_clicked)
         
     def cell_clicked(self):
-        edit_button = QPushButton("Edit")
-        edit_button.clicked.connect(self.edit_cell)
-        delete_button = QPushButton("Delete")
-        
+        selected_row = self.student_table.currentRow()
+        selected_data = []
+        for column in range(self.student_table.columnCount()):
+            item = self.student_table.item(selected_row, column)
+            if item is not None:
+                selected_data.append(item.text())
+            else:
+                selected_data.append("")
 
-    def edit_cell(self):
-        dialog = EditDialog()
+        edit_button = QPushButton("Edit")
+        edit_button.clicked.connect(lambda: self.edit_cell(selected_data))
+        delete_button = QPushButton("Delete")
+        delete_button.clicked.connect(self.delete_cell)
+        
+        children = self.statusbar.findChildren(QPushButton)
+        if children:
+            for child in children:
+                self.statusbar.removeWidget(child)
+        
+        self.statusbar.addWidget(edit_button)
+        self.statusbar.addWidget(delete_button)
+
+    def edit_cell(self, selected_data):
+        dialog = EditDialog(selected_data)
         dialog.exec()
+        self._load_data()
+
+        
+    def delete_cell(self):
+        dialog = DeleteDialog()
+        dialog.exec()
+        
     def _load_data(self):
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
@@ -85,23 +106,18 @@ class StudentManagementSystem(QMainWindow):
 
     def add_student(self):
         dialog = InsertDialog()
-        dialog.student_added.connect(self._reload_data)
         dialog.exec()
-
-    def _reload_data(self):
         self._load_data()
 
     def about(self):
         pass
     
     def search(self):
-        self.search_dialog = SearchDialog()
         self.search_dialog.exec()
-
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = StudentManagementSystem()
-    window.show()
+    main_window = StudentManagementSystem()
+    main_window.show()
     sys.exit(app.exec())

@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import QLineEdit, QPushButton, QDialog, QVBoxLayout, QCombo
 import sqlite3
 
 class InsertDialog(QDialog):
-    student_added = pyqtSignal()
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Add Student Data")
@@ -48,6 +47,6 @@ class InsertDialog(QDialog):
         connection.commit()
         cursor.close()
         connection.close()
-        self.student_added.emit()
+        self.accept()
 
         
