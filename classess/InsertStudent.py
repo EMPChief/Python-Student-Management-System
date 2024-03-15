@@ -2,6 +2,7 @@ from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QLineEdit, QPushButton, QDialog, QVBoxLayout, QComboBox
 import sqlite3
 
+
 class InsertDialog(QDialog):
     def __init__(self):
         super().__init__()
@@ -31,9 +32,9 @@ class InsertDialog(QDialog):
 
         self.submit_button = QPushButton("Register")
         self.submit_button.clicked.connect(self.add_student)
-        
+
         layout.addWidget(self.submit_button)
-        
+
         self.setLayout(layout)
 
     def add_student(self):

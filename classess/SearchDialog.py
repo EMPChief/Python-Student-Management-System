@@ -59,6 +59,12 @@ class SearchDialog(QDialog):
             current_item.setSelected(True)
             self.main_window.student_table.scrollToItem(current_item, QTableWidget.ScrollHint.EnsureVisible)
         except ValueError as e:
+            print("ValueError searching student:", e)
+        except AttributeError as e:
+            print("AttributeError searching student:", e)
+        except TypeError as e:
+            print("TypeError searching student:", e)
+        except Exception as e:
             print("Error searching student:", e)
 
     def reset_search(self):
