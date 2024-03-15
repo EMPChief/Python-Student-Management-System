@@ -5,6 +5,15 @@ from PyQt6.QtCore import Qt
 
 class AboutDialog(QDialog):
     def __init__(self, parent=None):
+        """
+        Initialize the About window with a specific parent.
+
+        Parameters:
+            parent: Optional parent widget (default is None)
+
+        Return:
+            None
+        """
         super().__init__(parent)
         self.setWindowTitle("About")
 

@@ -6,6 +6,15 @@ import sqlite3
 class DeleteDialog(QDialog):
 
     def __init__(self, selected_data):
+        """
+        Initialize the Delete Student window with the selected student's data.
+        
+        Parameters:
+            selected_data (tuple): A tuple containing the student's ID, name, course, and number.
+        
+        Returns:
+            None
+        """
         super().__init__()
         self.setWindowTitle("Delete Student")
         self.selected_data = selected_data
@@ -32,6 +41,9 @@ class DeleteDialog(QDialog):
         no_button.clicked.connect(self.close)
 
     def delete_student(self):
+        """
+        A method to delete a student record from the database based on the provided data.
+        """
         try:
             student_data = self.selected_data
             connection = sqlite3.connect("database.db")
@@ -57,4 +69,7 @@ class DeleteDialog(QDialog):
             self.accept()
 
     def close(self):
+        """
+        Closes the current operation by rejecting it.
+        """
         self.reject()

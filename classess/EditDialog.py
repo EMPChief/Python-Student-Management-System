@@ -5,6 +5,15 @@ import sqlite3
 class EditDialog(QDialog):
 
     def __init__(self, selected_data):
+        """
+        Initialize the Edit Student Data window with the selected student's data.
+
+        Parameters:
+        - selected_data: list of strings representing the selected student's data in the format [student_id, name, course, mobile_number]
+
+        Returns:
+        None
+        """
         super().__init__()
         self.setWindowTitle("Edit Student Data")
         self.setFixedSize(300, 300)
@@ -40,6 +49,14 @@ class EditDialog(QDialog):
         self.setLayout(layout)
 
     def update_student(self):
+        """
+        A function to update student information in the database.
+
+        Parameters:
+        - self: the instance of the class
+        Returns:
+        None
+        """
         try:
             student_name = self.student_name_input.text()
             course = self.course_dropdown.currentText()

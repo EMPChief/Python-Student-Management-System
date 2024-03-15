@@ -4,6 +4,15 @@ import sqlite3
 
 class SearchDialog(QDialog):
     def __init__(self, main_window):
+        """
+        Initializes the SearchStudentDialog with the given main_window.
+
+        Parameters:
+            main_window (object): The main window object.
+
+        Returns:
+            None
+        """
         super().__init__()
         self.main_window = main_window
         self.last_found_row = -1
@@ -25,6 +34,10 @@ class SearchDialog(QDialog):
         self.setLayout(layout)
 
     def search_student(self):
+        """
+        A function to search for a student in the database based on the provided name.
+        It retrieves student information associated with the provided name and highlights the matching row in the GUI table.
+        """
         try:
             name = self.student_name.text().strip()
             connection = sqlite3.connect("database.db")
@@ -71,6 +84,9 @@ class SearchDialog(QDialog):
             print("Error searching student:", e)
 
     def reset_search(self):
+        """
+        Reset the search functionality by clearing the last found row, student names, and table selection.
+        """
         try:
             self.last_found_row = -1
             self.student_name.clear()

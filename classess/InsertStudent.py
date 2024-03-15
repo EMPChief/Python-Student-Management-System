@@ -4,6 +4,9 @@ import sqlite3
 
 class InsertDialog(QDialog):
     def __init__(self):
+        """
+        Initialize the Add Student Data window with input fields for student name, course selection, and mobile number. Also includes a submit button to register the student.
+        """
         super().__init__()
         self.setWindowTitle("Add Student Data")
         self.setFixedSize(300, 300)
@@ -37,6 +40,9 @@ class InsertDialog(QDialog):
         self.setLayout(layout)
 
     def add_student(self):
+        """
+        A function that adds a student to the database with the provided name, course, and mobile number.
+        """
         try:
             name = self.student_name_input.text()
             course = self.course_dropdown.currentText()
