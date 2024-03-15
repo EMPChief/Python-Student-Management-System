@@ -37,16 +37,24 @@ class InsertDialog(QDialog):
         self.setLayout(layout)
 
     def add_student(self):
-        name = self.student_name_input.text()
-        course = self.course_dropdown.currentText()
-        mobile = self.mobile_input.text()
-        connection = sqlite3.connect("database.db")
-        cursor = connection.cursor()
-        sql_query = "INSERT OR IGNORE INTO students (name, course, mobile) SELECT ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM students WHERE name=? AND course=? AND mobile=?)"
-        cursor.execute(sql_query, (name, course, mobile, name, course, mobile))
-        connection.commit()
-        cursor.close()
-        connection.close()
-        self.accept()
-
-        
+        try:
+            name = self.student_name_input.text()
+            course = self.course_dropdown.currentText()
+            mobile = self.mobile_input.text()
+            connection = sqlite3.connect("database.db")
+            cursor = connection.cursor()
+            sql_query = "INSERT INTO students (name, course, mobile) VALUES (?, ?, ?)"
+            cursor.execute(sql_query, (name, course, mobile))
+            connection.commit()
+        except ValueError as e:
+            print("Error adding student:", e)
+        except AttributeError as e:
+            print("Error adding student:", e)
+        except TypeError as e:
+            print("Error adding student:", e)
+        except Exception as e:
+            print("Error adding student:", e)
+        finally:
+            cursor.close()
+            connection.close()
+            self.accept()

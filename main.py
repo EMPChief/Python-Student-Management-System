@@ -89,8 +89,18 @@ class StudentManagementSystem(QMainWindow):
 
         
     def delete_cell(self):
-        dialog = DeleteDialog()
-        dialog.exec()
+        selected_row = self.student_table.currentRow()
+        if selected_row >= 0:
+            selected_data = []
+            for column in range(self.student_table.columnCount()):
+                item = self.student_table.item(selected_row, column)
+                if item is not None:
+                    selected_data.append(item.text())
+                else:
+                    selected_data.append("")
+            dialog = DeleteDialog(selected_data)
+            dialog.exec()
+            self._load_data()
         
     def _load_data(self):
         conn = sqlite3.connect("database.db")

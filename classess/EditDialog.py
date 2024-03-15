@@ -38,15 +38,19 @@ class EditDialog(QDialog):
         self.setLayout(layout)
     
     def update_student(self):
-        student_name = self.student_name_input.text()
-        course = self.course_dropdown.currentText()
-        mobile_number = self.mobile_input.text()
-        connection = sqlite3.connect("database.db")
-        cursor = connection.cursor()
-        sql_query = "UPDATE students SET name=?, course=?, mobile=? WHERE name=? AND course=? AND mobile=?"
-        cursor.execute(sql_query, (student_name, course, mobile_number, self.selected_data[1], self.selected_data[2], self.selected_data[3]))
-        connection.commit()
-        cursor.close()
-        connection.close()
-        self.accept()
+        try:
+            student_name = self.student_name_input.text()
+            course = self.course_dropdown.currentText()
+            mobile_number = self.mobile_input.text()
+            connection = sqlite3.connect("database.db")
+            cursor = connection.cursor()
+            sql_query = "UPDATE students SET name=?, course=?, mobile=? WHERE name=? AND course=? AND mobile=?"
+            cursor.execute(sql_query, (student_name, course, mobile_number, self.selected_data[1], self.selected_data[2], self.selected_data[3]))
+            connection.commit()
+        except ValueError as e:
+            print("Error updating student:", e)
+        finally:
+            cursor.close()
+            connection.close()
+            self.accept()
         
