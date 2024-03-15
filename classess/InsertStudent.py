@@ -1,4 +1,3 @@
-from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QLineEdit, QPushButton, QDialog, QVBoxLayout, QComboBox
 import sqlite3
 
@@ -48,11 +47,11 @@ class InsertDialog(QDialog):
             cursor.execute(sql_query, (name, course, mobile))
             connection.commit()
         except ValueError as e:
-            print("Error adding student:", e)
+            print("ValueError adding student:", e)
         except AttributeError as e:
-            print("Error adding student:", e)
+            print("AttributeError adding student:", e)
         except TypeError as e:
-            print("Error adding student:", e)
+            print("TypeError adding student:", e)
         except Exception as e:
             print("Error adding student:", e)
         finally:

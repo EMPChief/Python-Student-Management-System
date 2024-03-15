@@ -1,14 +1,13 @@
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, \
-    QLineEdit, QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, \
-    QVBoxLayout, QComboBox, QToolBar, QStatusBar, QMessageBox
+from PyQt6.QtWidgets import QLabel, \
+    QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, \
+    QToolBar, QStatusBar, QMessageBox
 from PyQt6.QtGui import QAction, QIcon
-import sys
 import sqlite3
 from .DeleteDialog import DeleteDialog
 from .EditDialog import EditDialog
 from .SearchDialog import SearchDialog
 from .InsertStudent import InsertDialog
+from .AboutDialog import AboutDialog
 
 
 class StudentManagementSystem(QMainWindow):
@@ -87,8 +86,8 @@ class StudentManagementSystem(QMainWindow):
         self.statusbar.addWidget(delete_button)
 
     def edit_cell(self, selected_data):
-        dialog = EditDialog(selected_data)
-        dialog.exec()
+        edit_cell_dialog = EditDialog(selected_data)
+        edit_cell_dialog.exec()
         self.clear_status_bar()
         self._load_data()
 
@@ -124,8 +123,8 @@ class StudentManagementSystem(QMainWindow):
                                  f"Database error: {str(e)}")
 
     def add_student(self):
-        dialog = InsertDialog()
-        dialog.exec()
+        add_student_dialog = InsertDialog()
+        add_student_dialog.exec()
         self._load_data()
 
     def clear_status_bar(self):
@@ -135,7 +134,8 @@ class StudentManagementSystem(QMainWindow):
                 self.statusbar.removeWidget(child)
 
     def about(self):
-        pass
+        about_dialog = AboutDialog()
+        about_dialog.exec()
 
     def search(self):
         self.search_dialog.exec()

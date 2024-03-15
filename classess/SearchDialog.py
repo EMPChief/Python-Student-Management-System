@@ -1,6 +1,6 @@
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QLineEdit, QPushButton, QVBoxLayout, QDialog, QTableWidgetItem, QTableWidget
+from PyQt6.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QDialog, QTableWidget
 import sqlite3
+
 
 class SearchDialog(QDialog):
     def __init__(self, main_window):
@@ -29,7 +29,8 @@ class SearchDialog(QDialog):
             name = self.student_name.text().strip()
             connection = sqlite3.connect("database.db")
             cursor = connection.cursor()
-            result = cursor.execute("SELECT * FROM students WHERE name LIKE ?", (name + '%',))
+            result = cursor.execute(
+                "SELECT * FROM students WHERE name LIKE ?", (name + '%',))
             rows = list(result)
             cursor.close()
             connection.close()
@@ -53,11 +54,13 @@ class SearchDialog(QDialog):
                 self.reset_search()
                 return
 
-            self.last_found_row = (self.last_found_row + 1) % len(self.found_items)
+            self.last_found_row = (
+                self.last_found_row + 1) % len(self.found_items)
             current_item = self.found_items[self.last_found_row]
 
             current_item.setSelected(True)
-            self.main_window.student_table.scrollToItem(current_item, QTableWidget.ScrollHint.EnsureVisible)
+            self.main_window.student_table.scrollToItem(
+                current_item, QTableWidget.ScrollHint.EnsureVisible)
         except ValueError as e:
             print("ValueError searching student:", e)
         except AttributeError as e:
@@ -73,10 +76,10 @@ class SearchDialog(QDialog):
             self.student_name.clear()
             self.main_window.student_table.clearSelection()
         except ValueError as e:
-            print("Error resetting search:", e)
+            print("ValueError resetting search:", e)
         except AttributeError as e:
-            print("Error resetting search:", e)
+            print("AttributeError resetting search:", e)
         except TypeError as e:
-            print("Error resetting search:", e)
+            print("TypeError resetting search:", e)
         except Exception as e:
             print("Error resetting search:", e)

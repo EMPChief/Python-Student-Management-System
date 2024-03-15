@@ -1,9 +1,5 @@
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QApplication, QLabel, QWidget, QGridLayout, \
-    QLineEdit, QPushButton, QMainWindow, QTableWidget, QTableWidgetItem, QDialog, \
-    QVBoxLayout, QComboBox, QToolBar, QStatusBar, QMessageBox
-from PyQt6.QtGui import QAction, QIcon
-import sys
+from PyQt6.QtWidgets import QLabel, QPushButton, QDialog, \
+    QVBoxLayout, QMessageBox
 import sqlite3
 
 
@@ -52,7 +48,7 @@ class DeleteDialog(QDialog):
         except AttributeError as e:
             print("AttributeError deleting student:", e)
         except TypeError as e:
-            print("AttributeError deleting student:", e)
+            print("TypeError deleting student:", e)
         except Exception as e:
             print("Error deleting student:", e)
         finally:
