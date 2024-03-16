@@ -1,1 +1,5 @@
 PyQt6
+mysql-connector
+mysql-connector-python
+python-dotenv
+pymysql

@@ -8,7 +8,7 @@ from .EditDialog import EditDialog
 from .SearchDialog import SearchDialog
 from .InsertStudent import InsertDialog
 from .AboutDialog import AboutDialog
-from .DatabaseConnection import DatabaseConnection
+
 
 class StudentManagementSystem(QMainWindow):
     def __init__(self):
@@ -138,18 +138,15 @@ class StudentManagementSystem(QMainWindow):
         self.clear_status_bar()
         self._load_data()
 
-                
     def _load_data(self):
         """
         Load data from the database and populate the student_table.
         """
         try:
-            conn = DatabaseConnection().connect()
+            conn = sqlite3.connect("database.db")
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM students")
-            result = cursor.fetchall()
+            result = cursor.execute("SELECT * FROM students")
             self.student_table.setRowCount(0)
-
             for row_num, row_data in enumerate(result):
                 self.student_table.insertRow(row_num)
                 for col_num, data in enumerate(row_data):
@@ -158,14 +155,7 @@ class StudentManagementSystem(QMainWindow):
             conn.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Database Error",
-                                f"Database error: {str(e)}")
-
-
-
-
-
-
-
+                                 f"Database error: {str(e)}")
 
     def add_student(self):
         """

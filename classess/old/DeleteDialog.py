@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QLabel, QPushButton, QDialog, \
     QVBoxLayout, QMessageBox
 import sqlite3
-from .DatabaseConnection import DatabaseConnection
 
 
 class DeleteDialog(QDialog):
@@ -47,9 +46,9 @@ class DeleteDialog(QDialog):
         """
         try:
             student_data = self.selected_data
-            connection = DatabaseConnection().connect()
+            connection = sqlite3.connect("database.db")
             cursor = connection.cursor()
-            sql_query = "DELETE FROM students WHERE id=%s AND name=%s AND course=%s AND mobile=%s"
+            sql_query = "DELETE FROM students WHERE id=? AND name=? AND course=? AND mobile=?"
             cursor.execute(sql_query, student_data)
             connection.commit()
             confirmation_widget = QMessageBox()

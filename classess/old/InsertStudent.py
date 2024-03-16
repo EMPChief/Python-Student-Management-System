@@ -1,11 +1,11 @@
-from PyQt6.QtWidgets import QLineEdit, QPushButton, QDialog, QVBoxLayout, QComboBox, QMessageBox
-from .DatabaseConnection import DatabaseConnection
+from PyQt6.QtWidgets import QLineEdit, QPushButton, QDialog, QVBoxLayout, QComboBox
+import sqlite3
+
 
 class InsertDialog(QDialog):
     def __init__(self):
         """
-        Initialize the Add Student Data window with input fields for student name, course selection, and mobile number.
-        Also includes a submit button to register the student.
+        Initialize the Add Student Data window with input fields for student name, course selection, and mobile number. Also includes a submit button to register the student.
         """
         super().__init__()
         self.setWindowTitle("Add Student Data")
@@ -47,20 +47,19 @@ class InsertDialog(QDialog):
             name = self.student_name_input.text()
             course = self.course_dropdown.currentText()
             mobile = self.mobile_input.text()
-            connection = DatabaseConnection().connect()
+            connection = sqlite3.connect("database.db")
             cursor = connection.cursor()
-            sql_query = "INSERT INTO students (name, course, mobile) VALUES (%s, %s, %s)"
+            sql_query = "INSERT INTO students (name, course, mobile) VALUES (?, ?, ?)"
             cursor.execute(sql_query, (name, course, mobile))
             connection.commit()
-            QMessageBox.information(self, "Success", "Student added successfully!")
         except ValueError as e:
-            QMessageBox.critical(self, "Error", f"ValueError adding student: {e}")
+            print("ValueError adding student:", e)
         except AttributeError as e:
-            QMessageBox.critical(self, "Error", f"AttributeError adding student: {e}")
+            print("AttributeError adding student:", e)
         except TypeError as e:
-            QMessageBox.critical(self, "Error", f"TypeError adding student: {e}")
+            print("TypeError adding student:", e)
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Error adding student: {e}")
+            print("Error adding student:", e)
         finally:
             cursor.close()
             connection.close()

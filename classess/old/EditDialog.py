@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLineEdit, QComboBox, QPushButton
-from .DatabaseConnection import DatabaseConnection
+import sqlite3
 
 
 class EditDialog(QDialog):
@@ -61,9 +61,9 @@ class EditDialog(QDialog):
             student_name = self.student_name_input.text()
             course = self.course_dropdown.currentText()
             mobile_number = self.mobile_input.text()
-            connection = DatabaseConnection().connect()
+            connection = sqlite3.connect("database.db")
             cursor = connection.cursor()
-            sql_query = "UPDATE students SET name=%s, course=%s, mobile=%s WHERE name=%s AND course=%s AND mobile=%s"
+            sql_query = "UPDATE students SET name=?, course=?, mobile=? WHERE name=? AND course=? AND mobile=?"
             cursor.execute(sql_query, (student_name, course, mobile_number,
                            self.selected_data[1], self.selected_data[2], self.selected_data[3]))
             connection.commit()
