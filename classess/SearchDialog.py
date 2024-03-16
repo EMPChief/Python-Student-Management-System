@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QLineEdit, QPushButton, QVBoxLayout, QDialog, QTable
 import sqlite3
 from .DatabaseConnection import DatabaseConnection
 
+
 class SearchDialog(QDialog):
     def __init__(self, main_window):
         """
@@ -76,9 +77,6 @@ class SearchDialog(QDialog):
             print("TypeError searching student:", e)
         except Exception as e:
             print("Function error searching student:", e)
-        
-
-
 
     def reset_search(self):
         """

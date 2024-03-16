@@ -10,6 +10,7 @@ from .InsertStudent import InsertDialog
 from .AboutDialog import AboutDialog
 from .DatabaseConnection import DatabaseConnection
 
+
 class StudentManagementSystem(QMainWindow):
     def __init__(self):
         """
@@ -138,7 +139,6 @@ class StudentManagementSystem(QMainWindow):
         self.clear_status_bar()
         self._load_data()
 
-                
     def _load_data(self):
         """
         Load data from the database and populate the student_table.
@@ -158,14 +158,7 @@ class StudentManagementSystem(QMainWindow):
             conn.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Database Error",
-                                f"Database error: {str(e)}")
-
-
-
-
-
-
-
+                                 f"Database error: {str(e)}")
 
     def add_student(self):
         """
